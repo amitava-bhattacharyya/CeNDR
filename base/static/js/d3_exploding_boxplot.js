@@ -108,8 +108,9 @@ function(d3,d3tip)
 
 		//default tool tip function
 		var _tipFunction = function(d) {
-				return ' <span style="color:#000000"><b>'+
-						functorkey(aes.label)(d)+'</b></span><span style="color:#000000;" > : <b>'+ tickFormat(functorkey(aes.y)(d)) + '</b></span>';
+				//return ' <span style="color:#000000"><b>'+
+				//		functorkey(aes.label)(d)+'</b></span><span style="color:#000000;" > : <b>'+ tickFormat(functorkey(aes.y)(d)) + '</b></span>';
+				return ' <span style="color:#000000"><b>'+ tickFormat(functorkey(aes.y)(d)) + '</b></span>';
 			}
 
 
@@ -117,7 +118,7 @@ function(d3,d3tip)
     var chart = function(elem)
     {
       svg = d3.select(elem).append('svg')
-            .attr('width',width)
+            .attr('width',width+100)
             .attr('height',height)
 
 			svg.append('g').append('rect')
@@ -168,6 +169,28 @@ function(d3,d3tip)
             .text(ylab);
 
 			container = container.insert('g','.axis')
+	  legend = container.append("g")
+		.attr("class","legend")
+		.attr("transform","translate("+(width)+",10)")
+		.style("font-size","12px")
+		.style("background","#cff")
+		.style("border", "1px solid black");
+	  legend.append("text").style("text-anchor", "middle").text("Assay Numbers")
+	  
+	  UniqueNames.forEach(function(d,i){
+		  eleg =legend.append("g")
+			.attr("transform","translate(0,"+(i+2)*15+")")
+		  eleg.append("circle")
+			.attr("transform","translate(-10,"+-4+")")
+			//.attr('cx',xscale.rangeBand()*0.5)
+			//.attr('cy',yscale(g.quartiles[1]))
+			.attr('r',5)
+			.attr('fill',default_colors[i])
+			
+		  eleg.append("text").style("text-anchor", "left").text(d);
+			
+		  
+	  });
 
       draw()
     };
@@ -314,9 +337,9 @@ function(d3,d3tip)
           .attr('transform',function(d){
             return 'translate('+xscale(d.group)+',0)'
           })
-          .each(create_boxplot)
+          .each(create_boxplot).call(draw_boxplot)
 					.each(create_jitter)
-					.call(draw_boxplot)
+					
 
     };
 
