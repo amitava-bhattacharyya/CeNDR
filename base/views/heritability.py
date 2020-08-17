@@ -90,13 +90,13 @@ def getHTData():
 
 		with open("./jobsD/"+jbd+'.json', 'w') as out:
 			out.write(json.dumps(chData))
-			
+		pid = ""	
 		#start execution
 		if len(trait) > 1 : u = ""
 		else:
 			import os
 			pid = os.spawnvp(os.P_NOWAIT, 'docker', ['docker', 'run', '-v', jobsDpath+'/jobsD:/home/data', 'nwuniv/htcal.v1.0', 'Rscript', '/home/script/H2_script.R', '/home/data/'+jbd+'.txt', '/home/data/'+jbd+'.out'])
 		#return url
-		#if pid == "": u = ""
+		if pid == "": u = ""
 		return(json.dumps({"url": u}))
 
