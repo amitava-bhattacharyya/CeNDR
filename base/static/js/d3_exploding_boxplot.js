@@ -55,12 +55,17 @@ function(d3,d3tip)
   var exploding_boxplot = function(data,aes)
   {
     //defaults
+    	var strn = []
+	data.sort(sortByProperty(aes.color));
+	data.forEach(function(d,i){data[i][aes.y] = parseFloat(d[aes.y]); if (strn.indexOf(d[aes.group])==-1){strn.push(d[aes.group]);}});
+	i = ((strn.length % 25) > 0) ? parseInt(strn.length / 25)+1 : parseInt(strn.length / 25);
+	
     var iqr = 1.5
     var height = 480
     var width = 900
     var boxpadding = 0.2
     var margin = {top:10,bottom:30,left:40,right:10}
-		var rotateXLabels = false;
+		var rotateXLabels = true;
 
     aes.color = aes.color || aes.group
     aes.radius = aes.radius || d3.functor(3)
@@ -90,7 +95,10 @@ function(d3,d3tip)
 
 	UniqueNames= $.unique(data.map(function (d) {return d.a;}));
 	default_colors = [];
-	UniqueNames.forEach(function(d){c=getRandomColor(); default_colors.push(c)});
+	if (aes.pal){default_colors=aes.pal}
+	else{
+	    UniqueNames.forEach(function(d){c=getRandomColor(); default_colors.push(c)});
+	}
     var colorscale = d3.scale.ordinal()
             .domain(d3.set(data.map(functorkey(aes.color))).values())
             .range(default_colors)
@@ -139,14 +147,14 @@ function(d3,d3tip)
 
       var xaxisG = container.append('g')
             .attr('class','d3-exploding-boxplot x axis')
-            .attr("transform", "translate(0,"+ (height-margin.top-margin.bottom) +")")
+            .attr("transform", "translate(0,"+ (height-margin.top-margin.bottom-15) +")")
             .call(xAxis);
 
 			if(rotateXLabels){
 				xaxisG.selectAll('text')
-				    .attr("transform", "rotate(90)")
+				    .attr("transform", "rotate(-20)")
 						.attr("dy",".35em")
-						.attr("x","9").attr("y","0")
+						.attr("x","-40").attr("y","15")
 				    .style("text-anchor", "start");
 			}
 
